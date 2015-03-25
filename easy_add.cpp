@@ -1,3 +1,5 @@
+//matrix addition?
+
 #include <iostream>
 #include <cstdlib>
 #include <fstream>
@@ -5,8 +7,9 @@
 #include <cstring>
 #include <sys/time.h>
 #include <errno.h>
+#include <vector>
 
-#include "arglib.h"
+// #include "arglib.h"
 
 
 #ifdef __MIGRATE__
@@ -34,13 +37,16 @@ pthread_mutex_t lock;
 int next_matrix = 0;
 double dummy;
 
-clarg::argInt nmats("-nm", "Number of matrix multiplications", 1);
-clarg::argInt matsz("-msz", "Matrix size = N x N", 1000);
-clarg::argInt nthreads("-nt", "Number of threads", 1);
+// clarg::argInt nmats("-nm", "Number of matrix multiplications", 1);
+// clarg::argInt matsz("-msz", "Matrix size = N x N", 1000);
+// clarg::argInt nthreads("-nt", "Number of threads", 1);
 
+int nmats = 1;
+int matsz = 1000;
+int nthreads = 8;
 
 double* new_matrix(double* src, unsigned N) {
-  
+
   double *m = (double*) malloc( N*N*sizeof(double) );
   if (m == NULL) {
 	printf("\n\nError: new_matrix()\n\n");
@@ -50,24 +56,24 @@ double* new_matrix(double* src, unsigned N) {
   if (src != NULL) { memcpy( m, src, N*N*sizeof(double) ); }
 
   else { memset( m, 0, N*N*sizeof(double) ); }
-	
+
   return m;
 }
 
 
 void init_matrices(void) {
-	
-  for (unsigned i=0; i<nmats.get_value(); i++) {
-    matricesA.push_back( new_matrix(0, matsz.get_value()) );
-    matricesB.push_back( new_matrix(0, matsz.get_value()) );
-    matricesC.push_back( new_matrix(0, matsz.get_value()) );
+
+  for (unsigned i=0; i<nmats; i++) {
+    matricesA.push_back( new_matrix(0, matsz) );
+    matricesB.push_back( new_matrix(0, matsz) );
+    matricesC.push_back( new_matrix(0, matsz) );
   }
 }
 
 
 void free_matrices() {
-  
-  for (unsigned i=0; i<nmats.get_value(); i++) {
+
+  for (unsigned i=0; i<nmats; i++) {
     free(matricesA[i]);
     free(matricesB[i]);
     free(matricesC[i]);
@@ -76,7 +82,7 @@ void free_matrices() {
 
 
 double mysecond() {
-  
+
   struct timeval tp;
   struct timezone tzp;
   gettimeofday(&tp,&tzp);
@@ -87,36 +93,36 @@ double mysecond() {
 int get_matrix(void) {
 	int id;
 	pthread_mutex_lock(&lock);
-		if ( next_matrix >= nmats.get_value() )
+		if ( next_matrix >= nmats )
 			id = -1;
 		else
 			id = next_matrix++;
 	pthread_mutex_unlock(&lock);
-	
+
 	return id;
 }
 
 
 void* worker_thread(void* m) {
 #ifdef __THREAD_LOG__
-		pthread_mutex_lock(&tid_lock); 
+		pthread_mutex_lock(&tid_lock);
 		//{
 			thread_done--;
 			thread_ids[thread_done] = syscall(SYS_gettid);
-			
+
 			if (thread_done == 0) {
 				threads_fp = fopen("thread_TIDs.tmp","w");
 				if (threads_fp == NULL) {
 					printf("\nError in threads_fp...ABORTING!");
 					exit(1);
 				}
-				
-				int end_loop = nthreads.get_value();
+
+				int end_loop = nthreads;
 				//fprintf(threads_fp,"%d\n",end_loop);
-				
+
 				for (int tmp_loop=0; tmp_loop < end_loop; ++tmp_loop)
 					fprintf(threads_fp,"%d\n", (int)thread_ids[tmp_loop]);
-								
+
 				fclose(threads_fp);
 				rename("thread_TIDs.tmp", "thread_TIDs");
 				work_busy_lock = 0;
@@ -133,23 +139,23 @@ void* worker_thread(void* m) {
 		double* A = matricesA[matrix_id];
 		double* B = matricesB[matrix_id];
 		double* C = matricesC[matrix_id];
-		unsigned N = matsz.get_value();
+		unsigned N = matsz;
 
 #ifdef __MIGRATE__
 
 		hwloc_bitmap_t set = hwloc_bitmap_alloc();
-		
+
 		hwloc_get_cpubind(topology, set, HWLOC_CPUBIND_THREAD);
 		hwloc_get_last_cpu_location(topology, set, HWLOC_CPUBIND_THREAD);
-		
+
 		hwloc_bitmap_singlify(set);
-		
-		hwloc_set_area_membind ( topology, (const void*)A, N*N*sizeof(double), (hwloc_const_cpuset_t)set, HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_MIGRATE );		
-		hwloc_set_area_membind ( topology, (const void*)B, N*N*sizeof(double), (hwloc_const_cpuset_t)set, HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_MIGRATE );		
-		hwloc_set_area_membind ( topology, (const void*)C, N*N*sizeof(double), (hwloc_const_cpuset_t)set, HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_MIGRATE );		
-		
-		hwloc_bitmap_free(set);			
-#endif	
+
+		hwloc_set_area_membind ( topology, (const void*)A, N*N*sizeof(double), (hwloc_const_cpuset_t)set, HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_MIGRATE );
+		hwloc_set_area_membind ( topology, (const void*)B, N*N*sizeof(double), (hwloc_const_cpuset_t)set, HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_MIGRATE );
+		hwloc_set_area_membind ( topology, (const void*)C, N*N*sizeof(double), (hwloc_const_cpuset_t)set, HWLOC_MEMBIND_BIND, HWLOC_MEMBIND_MIGRATE );
+
+		hwloc_bitmap_free(set);
+#endif
 
 		int i=0, j=0;
 
@@ -172,12 +178,12 @@ int main(int argc, char *argv[]) {
 	hwloc_topology_load(topology);
 #endif
 
-	if (clarg::parse_arguments(argc, argv)) {
-		cerr << "Error when parsing the arguments!" << endl;
-		return 1;
-	}
+	// if (clarg::parse_arguments(argc, argv)) {
+	// 	cerr << "Error when parsing the arguments!" << endl;
+	// 	return 1;
+	// }
 
-	if (nmats.get_value() < 1) {
+	if (nmats < 1) {
 		cerr << "Error, nm must be >= 1" << endl;
 		return 1;
 	}
@@ -189,7 +195,7 @@ int main(int argc, char *argv[]) {
 
 	init_matrices();
 
-	int n_threads = nthreads.get_value();
+	int n_threads = nthreads;
 	std::vector<pthread_t> threads(n_threads);
 
 #ifdef __THREAD_LOG__
@@ -199,7 +205,7 @@ int main(int argc, char *argv[]) {
 		printf("\nError allocating thread_ids!");
 		return -1;
 	}
-	
+
 	if (pthread_mutex_init(&tid_lock, NULL) != 0) {
       printf("\n mutex init failed\n");
       return 1;
@@ -217,16 +223,16 @@ int main(int argc, char *argv[]) {
 
 	tempo = mysecond() - tempo;
 
-	printf("%d %f \n", matsz.get_value(), tempo);
+	printf("%d %f \n", matsz, tempo);
 	free_matrices();
 
-#ifdef __MIGRATE__  
+#ifdef __MIGRATE__
 	hwloc_topology_destroy(topology);
-#endif 
+#endif
 
 #ifdef __THREAD_LOG__
 	free(thread_ids);
 #endif
-    
+
 	return 0;
 }
