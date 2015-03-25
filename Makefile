@@ -1,11 +1,12 @@
 BIN=BucketSort easy_add easy_ch easy_lu easy_prod kMeans KNN partitionStrSearch
 BIN_X=$(addsuffix .x,$(BIN))
 
-CFLAGS=-pthread -O2 -lm
+CFLAGS=-pthread -O2
 CXXFLAGS=-pthread -O2
 
 CC=gcc
 CXX=g++
+LDLIBS=-lm
 DEPS =
 
 all: $(BIN)
