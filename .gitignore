@@ -1,0 +1,17 @@
+easy_add
+easy_ch
+easy_lu
+easy_prod
+kMeans
+KNN
+partitionStrSearch
+easy_add_mig
+easy_ch_mig
+easy_lu_mig
+easy_prod_mig
+kMeans_mig
+KNN_mig
+partitionStrSearch_mig
+BucketSort
+BucketSort_mig
+*.o
