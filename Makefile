@@ -21,5 +21,5 @@ clean:
 # ./easy_lu 64 600 64
 # ./easy_prod 64 600 64
 # ./kMeans ?????
-# ./KNN
+# ./KNN 64 500000 20
 # ./partitionStrSearch 64 10000000 10000 0

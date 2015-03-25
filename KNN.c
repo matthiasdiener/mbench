@@ -195,8 +195,8 @@ int main (int argc, char *argv[]) {
   int t; 
 
   if (argc != 4) {
-    fprintf(stderr, "Syntax: %s num_threads num_points num_K\n", argv[0]);
-    fprintf(stderr, "- num_points >> num_K\n");
+    fprintf(stderr, "Usage: %s num_threads num_points num_K\n", argv[0]);
+    fprintf(stderr, "Observation: num_points >> num_K\n");
     return -1;
   } else {
 #ifdef __MIGRATE__
