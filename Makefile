@@ -1,7 +1,6 @@
-SRC=easy_add.cpp easy_ch.cpp easy_lu.cpp easy_prod.cpp kMeans.cpp KNN.cpp partitionStrSearch.cpp BucketSort.cpp
-BIN=$(subst .cpp,,$(SRC))
+SRC=BucketSort.cpp easy_add.cpp easy_ch.cpp easy_lu.cpp easy_prod.cpp kMeans.cpp KNN.cpp partitionStrSearch.cpp
 
-# SRC = $(patsubst %,$(BIN)/%,$(BIN).cpp))
+BIN=$(subst .cpp,,$(SRC))
 
 CFLAGS=-pthread -O2 -lm
 CXXFLAGS=-pthread -O2
@@ -10,17 +9,11 @@ CC=gcc
 CXX=g++
 DEPS =
 
-# %.o: %.c $(DEPS)
-# 	$(CC) -c -o $@ $< $(CFLAGS)
-
-# %.o: %.cpp $(DEPS)
-# 	$(CXX) -c -o $@ $< $(CFLAGS)
-
 all: $(BIN)
-
-# $(BIN): $(DEPS)
-# 	$(CXX) -c -o $@ $< $(CFLAGS)
-
 
 clean:
 	rm -f $(BIN)
+
+
+# ./BucketSort 3000000 64 0
+# ./easy_add 1 20000 64

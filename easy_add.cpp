@@ -178,10 +178,11 @@ int main(int argc, char *argv[]) {
 	hwloc_topology_load(topology);
 #endif
 
-	// if (clarg::parse_arguments(argc, argv)) {
-	// 	cerr << "Error when parsing the arguments!" << endl;
-	// 	return 1;
-	// }
+	if (argc == 4) {
+		nmats = atoi(argv[1]);
+		matsz = atoi(argv[2]);
+		nthreads = atoi(argv[3]);
+	}
 
 	if (nmats < 1) {
 		cerr << "Error, nm must be >= 1" << endl;

@@ -136,10 +136,11 @@ int main(int argc, char *argv[]) {
 	hwloc_topology_load(topology);
 #endif
 
-	// if (clarg::parse_arguments(argc, argv)) {
-	// 	cerr << "Error when parsing the arguments!" << endl;
-	// 	return 1;
-	// }
+	if (argc == 4) {
+		nmats = atoi(argv[1]);
+		matsz = atoi(argv[2]);
+		nthreads = atoi(argv[3]);
+	}
 
 	if (pthread_mutex_init(&lock, NULL) != 0) {
 		printf("\n mutex init failed\n");
