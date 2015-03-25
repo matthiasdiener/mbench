@@ -192,7 +192,7 @@ void print_first_k(long* array_x, long* array_y, const int K) {
 
 int main (int argc, char *argv[]) { 
 
-  int t; 
+  long t;
 
   if (argc != 4) {
     fprintf(stderr, "Usage: %s num_threads num_points num_K\n", argv[0]);

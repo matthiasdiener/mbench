@@ -256,7 +256,7 @@ int main(int argc, char *argv[]) {
     double tempo = mysecond();
 
 //pthread
-    for(int t=0; t<n_threads; t++)
+    for(long t=0; t<n_threads; t++)
       pthread_create(&threads[t], NULL, worker_thread, (void*) t);
 
     for(int t=0; t<n_threads; t++)

@@ -15,3 +15,6 @@ partitionStrSearch_mig
 BucketSort
 BucketSort_mig
 *.o
+*.x
+*.csv
+*.csv.*

@@ -160,7 +160,7 @@ int main (int argc, char *argv[]) {
     pthread_t* search_threads;
     pthread_attr_t init_attr;
     pthread_attr_t search_attr;
-    int t; 
+    long t;
 
     // Read input arguments
     NUM_THREADS = atoi(argv[1]);

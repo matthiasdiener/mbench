@@ -1,6 +1,5 @@
-SRC=BucketSort.cpp easy_add.cpp easy_ch.cpp easy_lu.cpp easy_prod.cpp kMeans.cpp KNN.cpp partitionStrSearch.cpp
-
-BIN=$(subst .cpp,,$(SRC))
+BIN=BucketSort easy_add easy_ch easy_lu easy_prod kMeans KNN partitionStrSearch
+BIN_X=$(addsuffix .x,$(BIN))
 
 CFLAGS=-pthread -O2 -lm
 CXXFLAGS=-pthread -O2
@@ -10,9 +9,10 @@ CXX=g++
 DEPS =
 
 all: $(BIN)
+	@for bin in $(BIN); do cp $$bin $$bin.x; done
 
 clean:
-	rm -f $(BIN)
+	rm -f $(BIN) $(BIN_X)
 
 #### Parameters (~ 5 seconds execution time on turing):
 # ./BucketSort 3000000 64 0
