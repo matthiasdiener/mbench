@@ -1,4 +1,4 @@
-SRC=easy_add.cpp easy_ch.cpp easy_lu.cpp easy_prod.cpp kMeans.cpp KNN.cpp partitionStrSearch.cpp
+SRC=easy_add.cpp easy_ch.cpp easy_lu.cpp easy_prod.cpp kMeans.cpp KNN.cpp partitionStrSearch.cpp BucketSort.cpp
 BIN=$(subst .cpp,,$(SRC))
 
 # SRC = $(patsubst %,$(BIN)/%,$(BIN).cpp))
