@@ -334,7 +334,7 @@ int main(int argc, char** argv){
 #endif
 
     tempo = mysecond() - tempo;
-    printf("\n\n%d %lf \n", atoi(argv[1]), tempo);
+    printf("%d %lf \n", atoi(argv[1]), tempo);
 
 #ifdef __THREAD_LOG__
 	free(thread_ids);
